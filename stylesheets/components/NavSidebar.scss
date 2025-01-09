@@ -6,7 +6,7 @@
 
 .NavSidebar {
   position: relative;
-  // Note: Intentionally no z-index here so drag handle is above other content
+  z-index: $z-index-above-base;
   height: 100%;
   display: flex;
   flex-direction: column;
