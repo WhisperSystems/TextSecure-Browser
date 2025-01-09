@@ -264,4 +264,20 @@ describe('SystemTrayService', function (this: Mocha.Suite) {
 
     sinon.assert.notCalled(createTrayInstance);
   });
+
+  it('should remember its maximized state upon restore', () => {
+    const service = newService();
+    service.setEnabled(true);
+    const browserWindow = new BrowserWindow({ show: false });
+    service.setMainWindow(browserWindow);
+    const tray = service._getTray();
+    if (!tray) {
+      throw new Error('Test setup failed: expected a tray');
+    }
+    
+    browserWindow.maximize();
+    browserWindow.minimize();
+    tray.emit("click");
+    assert.isTrue(browserWindow.isMaximized());
+  });
 });
