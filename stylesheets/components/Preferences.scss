@@ -80,7 +80,7 @@
       content: '';
       display: block;
       height: 22px;
-      margin-inline: 18px 14px;
+      margin-inline: 6px 6px;
       width: 22px;
     }
 
@@ -186,6 +186,7 @@
   &__control {
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     min-height: 48px;
     padding-block: 4px;
@@ -201,6 +202,7 @@
     &--key {
       flex-grow: 1;
       padding-inline-end: 20px;
+      min-width: 22ch;
     }
 
     &--value {
