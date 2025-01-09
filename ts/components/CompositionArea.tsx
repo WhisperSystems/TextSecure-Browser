@@ -776,6 +776,37 @@ export const CompositionArea = memo(function CompositionArea({
     );
   }
 
+  // Listen to any key in the conversation panel to
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const { key } = e;
+
+      // We don't want to react to a control character
+      if (key.length !== 1) {
+        return;
+      }
+
+      // We don't want to switch focus if another panel is up
+      const panels = document.querySelectorAll('.conversation .panel');
+      if (panels && panels.length > 1) {
+        return;
+      }
+
+      // We don't want to take focus away of input fields
+      const { activeElement } = document;
+      if (activeElement?.nodeName.toLowerCase() === 'input') {
+        return;
+      }
+
+      inputApiRef.current?.focus();
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  });
+
   if (
     isBlocked ||
     areWePending ||
