@@ -306,6 +306,29 @@ export function TextStoryCreator({
     );
   }, [isColorPickerShowing, colorPickerPopperRef, colorPickerPopperButtonRef]);
 
+  useEffect(() => {
+    if (!isLinkPreviewInputShowing) {
+      return noop;
+    }
+    return handleOutsideClick(
+      () => {
+        setIsLinkPreviewInputShowing(false);
+        return true;
+      },
+      {
+        containerElements: [
+          linkPreviewInputPopperRef,
+          linkPreviewInputPopperButtonRef,
+        ],
+        name: 'TextStoryCreator.linkPreviewInput',
+      }
+    );
+  }, [
+    isLinkPreviewInputShowing,
+    linkPreviewInputPopperRef,
+    linkPreviewInputPopperButtonRef,
+  ]);
+
   const sliderColorNumber = getRGBANumber(sliderValue);
 
   let textForegroundColor = sliderColorNumber;
