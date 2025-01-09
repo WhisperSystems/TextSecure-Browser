@@ -1280,7 +1280,7 @@ describe('link preview fetching', () => {
       );
     });
 
-    it('returns null if the response is too large', async () => {
+    it('returns null if the Content-Length is too large', async () => {
       const fakeFetch = stub().resolves(
         new Response(await readFixture('kitten-1-64-64.jpg'), {
           headers: {
@@ -1302,7 +1302,32 @@ describe('link preview fetching', () => {
       sinon.assert.calledOnce(warn);
       sinon.assert.calledWith(
         warn,
-        'fetchLinkPreviewImage: Content-Length is too large or is unset; bailing'
+        'fetchLinkPreviewImage: Content-Length is too large; bailing'
+      );
+    });
+
+    it('returns null if the actual image is too large', async () => {
+      const fakeFetch = stub().resolves(
+        new Response(await readFixture('tina-rolf-269345-unsplash.jpg'), {
+          headers: {
+            'Content-Type': 'image/jpeg',
+          },
+        })
+      );
+
+      assert.isNull(
+        await fetchLinkPreviewImage(
+          fakeFetch,
+          'https://example.com/img',
+          new AbortController().signal,
+          logger
+        )
+      );
+
+      sinon.assert.calledOnce(warn);
+      sinon.assert.calledWith(
+        warn,
+        'fetchLinkPreviewImage: Image size is too large; bailing'
       );
     });
 
