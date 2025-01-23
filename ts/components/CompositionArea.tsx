@@ -657,35 +657,36 @@ export const CompositionArea = memo(function CompositionArea({
     </>
   ) : null;
 
+  const shouldShowStickers =
+    !quotedMessageProps && !draftEditMessage && withStickers;
   const stickerButtonPlacement = large ? 'top-start' : 'top-end';
-  const stickerButtonFragment =
-    !draftEditMessage && withStickers ? (
-      <div className="CompositionArea__button-cell">
-        <StickerButton
-          i18n={i18n}
-          knownPacks={knownPacks}
-          receivedPacks={receivedPacks}
-          installedPack={installedPack}
-          installedPacks={installedPacks}
-          blessedPacks={blessedPacks}
-          recentStickers={recentStickers}
-          clearInstalledStickerPack={clearInstalledStickerPack}
-          onClickAddPack={() =>
-            pushPanelForConversation({
-              type: PanelType.StickerManager,
-            })
-          }
-          onPickSticker={(packId, stickerId) =>
-            sendStickerMessage(conversationId, { packId, stickerId })
-          }
-          showIntroduction={showIntroduction}
-          clearShowIntroduction={clearShowIntroduction}
-          showPickerHint={showPickerHint}
-          clearShowPickerHint={clearShowPickerHint}
-          position={stickerButtonPlacement}
-        />
-      </div>
-    ) : null;
+  const stickerButtonFragment = shouldShowStickers ? (
+    <div className="CompositionArea__button-cell">
+      <StickerButton
+        i18n={i18n}
+        knownPacks={knownPacks}
+        receivedPacks={receivedPacks}
+        installedPack={installedPack}
+        installedPacks={installedPacks}
+        blessedPacks={blessedPacks}
+        recentStickers={recentStickers}
+        clearInstalledStickerPack={clearInstalledStickerPack}
+        onClickAddPack={() =>
+          pushPanelForConversation({
+            type: PanelType.StickerManager,
+          })
+        }
+        onPickSticker={(packId, stickerId) =>
+          sendStickerMessage(conversationId, { packId, stickerId })
+        }
+        showIntroduction={showIntroduction}
+        clearShowIntroduction={clearShowIntroduction}
+        showPickerHint={showPickerHint}
+        clearShowPickerHint={clearShowPickerHint}
+        position={stickerButtonPlacement}
+      />
+    </div>
+  ) : null;
 
   // Listen for cmd/ctrl-shift-x to toggle large composition mode
   useEffect(() => {
