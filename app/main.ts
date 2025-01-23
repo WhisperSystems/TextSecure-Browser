@@ -992,7 +992,7 @@ async function createWindow() {
     }
   });
 
-  mainWindow.once('ready-to-show', async () => {
+  mainWindow.webContents.once('did-finish-load', async () => {
     getLogger().info('main window is ready-to-show');
 
     // Ignore sql errors and show the window anyway
