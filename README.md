@@ -9,7 +9,7 @@ Signal Desktop links with Signal on [Android](https://github.com/signalapp/Signa
 
 ## Got a question?
 
-You can find answers to a number of frequently asked questions on our [support site](https://support.signal.org/).
+You can find answers to a number of frequently asked questions (FAQs) on our [support site](https://support.signal.org/).
 The [community forum](https://community.signalusers.org/) is another good place for questions.
 
 ## Found a Bug?
