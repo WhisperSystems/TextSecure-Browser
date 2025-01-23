@@ -36,9 +36,9 @@ export const focusableSelector = focusableSelectors.join(', ');
  * is focusable.
  */
 export function matchOrQueryFocusable(
-  element: HTMLElement
-): HTMLElement | null {
-  return element.matches(focusableSelector)
+  element: HTMLElement | null | undefined
+): HTMLElement | null | undefined {
+  return element?.matches(focusableSelector)
     ? element
-    : element.querySelector(focusableSelector);
+    : element?.querySelector(focusableSelector);
 }
