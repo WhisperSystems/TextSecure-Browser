@@ -5,8 +5,9 @@ import FocusTrap from 'focus-trap-react';
 import type { UIEvent } from 'react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import { BlurhashCanvas } from 'react-blurhash';
 import type { DraftBodyRanges } from '../types/BodyRange';
-import type { LocalizerType } from '../types/Util';
+import { ThemeType, type LocalizerType } from '../types/Util';
 import type { ContextMenuOptionType } from './ContextMenu';
 import type {
   ConversationType,
@@ -41,9 +42,9 @@ import { StoryViewsNRepliesModal } from './StoryViewsNRepliesModal';
 import { Theme } from '../util/theme';
 import { ToastType } from '../types/Toast';
 import { getAvatarColor } from '../types/Colors';
-import { getStoryBackground } from '../util/getStoryBackground';
+import { COLOR_BLACK_ALPHA_90 } from '../util/getStoryBackground';
 import { getStoryDuration } from '../util/getStoryDuration';
-import { isVideoAttachment } from '../types/Attachment';
+import { defaultBlurHash, isVideoAttachment } from '../types/Attachment';
 import { graphemeAndLinkAwareSlice } from '../util/graphemeAndLinkAwareSlice';
 import { useEscapeHandling } from '../hooks/useEscapeHandling';
 import { useRetryStorySend } from '../hooks/useRetryStorySend';
@@ -602,10 +603,21 @@ export function StoryViewer({
         }}
       >
         {alertElement}
-        <div
-          className="StoryViewer__overlay"
-          style={{ background: getStoryBackground(attachment) }}
-        />
+
+        {attachment ? (
+          <BlurhashCanvas
+            className="StoryViewer__overlay"
+            hash={attachment.blurHash || defaultBlurHash(ThemeType.dark)}
+            width={attachment.width}
+            height={attachment.height}
+          />
+        ) : (
+          <div
+            className="StoryViewer__overlay"
+            style={{ background: COLOR_BLACK_ALPHA_90 }}
+          />
+        )}
+
         <div className="StoryViewer__content">
           {canNavigateLeft && (
             <button
