@@ -2589,9 +2589,14 @@ button.ConversationDetails__action-button {
 .module-document-list-item__metadata {
   display: inline-flex;
   flex-direction: column;
-  flex-grow: 1;
-  flex-shrink: 0;
   margin-inline: 8px;
+  flex: 1;
+  min-width: 0;
+  .module-document-list-item__file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .module-document-list-item__file-size {
