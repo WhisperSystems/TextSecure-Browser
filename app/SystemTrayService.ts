@@ -223,7 +223,11 @@ export class SystemTrayService {
       if (browserWindow.isVisible()) {
         browserWindow.hide();
       } else {
-        browserWindow.show();
+        if (browserWindow.isMinimized()) {
+          browserWindow.restore();
+        } else {
+          browserWindow.show();
+        }
         focusAndForceToTop(browserWindow);
       }
     });
