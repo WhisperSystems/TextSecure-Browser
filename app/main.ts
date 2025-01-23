@@ -1,7 +1,7 @@
 // Copyright 2017 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { join, normalize, extname, dirname, basename } from 'path';
+import { join, normalize, extname, dirname, basename, isAbsolute } from 'path';
 import { pathToFileURL } from 'url';
 import * as os from 'os';
 import { chmod, realpath, writeFile } from 'fs-extra';
@@ -3021,6 +3021,30 @@ ipc.handle('show-save-dialog', async (_event, { defaultPath }) => {
     getLogger().warn('show-save-dialog: no main window');
 
     return { canceled: true };
+  }
+
+  if (
+    process.platform === 'linux' &&
+    defaultPath &&
+    !isAbsolute(defaultPath)
+  ) {
+    // On Linux the defaultPath should be an absolute path, otherwise the save dialog will have an empty filename on KDE/Plasma
+    let downloadsPath = '';
+    try {
+      downloadsPath = app.getPath('downloads');
+      getLogger().info(
+        'show-save-dialog: saving to user downloads directory: ' + downloadsPath
+      );
+    } catch (e) {
+      // If we cannot get Downloads path, fall back to the user's home directory
+      downloadsPath = app.getPath('home');
+      getLogger().info(
+        'show-save-dialog: saving to user home directory: ' + downloadsPath
+      );
+    }
+    if (downloadsPath) {
+      defaultPath = join(downloadsPath, defaultPath)
+    }
   }
 
   const { canceled, filePath: selectedFilePath } = await dialog.showSaveDialog(
