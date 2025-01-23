@@ -177,6 +177,11 @@ const isInlineContentDisposition = (headerValue: string | null): boolean =>
   !headerValue || headerValue.split(';', 1)[0] === 'inline';
 
 const parseContentLength = (headerValue: string | null): number => {
+  if (headerValue == null) {
+    // If no Content-Length header is given, assume the max allowed value
+    return MAX_IMAGE_CONTENT_LENGTH;
+  }
+
   // No need to parse gigantic Content-Lengths; only parse the first 10 digits.
   if (typeof headerValue !== 'string' || !/^\d{1,10}$/g.test(headerValue)) {
     return Infinity;
@@ -567,20 +572,6 @@ export async function fetchLinkPreviewImage(
     return null;
   }
 
-  const contentLength = parseContentLength(
-    response.headers.get('Content-Length')
-  );
-  if (contentLength < MIN_IMAGE_CONTENT_LENGTH) {
-    logger.warn('fetchLinkPreviewImage: Content-Length is too short; bailing');
-    return null;
-  }
-  if (contentLength > MAX_IMAGE_CONTENT_LENGTH) {
-    logger.warn(
-      'fetchLinkPreviewImage: Content-Length is too large or is unset; bailing'
-    );
-    return null;
-  }
-
   const { type: contentType } = parseContentType(
     response.headers.get('Content-Type')
   );
@@ -589,11 +580,29 @@ export async function fetchLinkPreviewImage(
     return null;
   }
 
+  const contentLength = parseContentLength(
+    response.headers.get('Content-Length')
+  );
+  if (contentLength < MIN_IMAGE_CONTENT_LENGTH) {
+    logger.warn('fetchLinkPreviewImage: Content-Length is too short; bailing');
+    return null;
+  }
+  if (contentLength > MAX_IMAGE_CONTENT_LENGTH) {
+    logger.warn('fetchLinkPreviewImage: Content-Length is too large; bailing');
+    return null;
+  }
+
   let data: Uint8Array;
   try {
     data = await response.buffer();
   } catch (err) {
     logger.warn('fetchLinkPreviewImage: failed to read body; bailing');
+    return null;
+  }
+
+  // Second check for image size in case there is no Content-Length header
+  if (data.length > MAX_IMAGE_CONTENT_LENGTH) {
+    logger.warn('fetchLinkPreviewImage: Image size is too large; bailing');
     return null;
   }
 
